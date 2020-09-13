@@ -1,4 +1,5 @@
 const mongoose = require("../db/db");
+const jwt = require("jsonwebtoken")
 
 const trainerSchema = mongoose.Schema({
   username: {
@@ -38,9 +39,7 @@ const trainerSchema = mongoose.Schema({
     {
       topic: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Topic",
-        unique: true,
-        require: true,
+        ref: "Topic"
       },
     },
   ],

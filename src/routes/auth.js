@@ -1,13 +1,16 @@
-const express = require('express')
-const route = express.Router()
-const authController = require('../controller/auth')
+// const express = require('express')
+// const route = express.Router()
+// const authController = require('../controller/auth')
 
-route.post('/admin-login', authController.adminLogin)
+// route.post('/admin-login', authController.adminLogin)
 
-route.post('/staff-login', authController.staffLogin)
+// route.post('/staff-login', authController.staffLogin)
 
-route.post('/trainee-login', authController.traineeLogin)
+// route.post('/trainee-login', authController.traineeLogin)
 
-route.post('/trainer-login', authController.trainerLogin)
+// route.post('/trainer-login', authController.trainerLogin)
 
-route.post('/logout', authController.logout)
+// route.post('/logout', authController.logout)
+
+
+// module.exports = route

@@ -41,8 +41,22 @@ const traineeSchema = mongoose.Schema({
   experiences: [
     {
       experience: {
-        type: String,
-        description: String,
+        company: {
+          type: String,
+          require: true,
+        },
+        position: {
+          type: String,
+          require: true,
+        },
+        timeStart: {
+          type: String,
+          require: true,
+        },
+        timeEnd: {
+          type: String,
+          require: true,
+        },
       },
     },
   ],
@@ -60,7 +74,41 @@ const traineeSchema = mongoose.Schema({
       },
     },
   ],
+  tokens: [
+    {
+      token: {
+        type: String,
+        require: true,
+      },
+    },
+  ],
 });
+
+
+
+
+traineeSchema.methods.generateAuthorToken = async function () {
+  const user = this;
+  const token = jwt.sign(
+    { _id: user._id.toString(), role: user.role },
+    "thisismytoken"
+  );
+  user.tokens.push({ token });
+  await user.save();
+  return token;
+};
+
+traineeSchema.statics.findByIdAndCheck = async (username, password) => {
+  const user = await User.findOne({ username: username });
+  if (!user) {
+    throw new Error("Username not correctly");
+  }
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) {
+    throw new Error("password is incorrect");
+  }
+  return user;
+};
 
 const trainee = mongoose.model("Trainee", traineeSchema);
 

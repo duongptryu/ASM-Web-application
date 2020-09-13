@@ -42,7 +42,6 @@ adminSchema.statics.findByIdAndCheck = async (username, password) => {
   if (!user) {
     throw new Error("Username not correctly");
   }
-
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
     throw new Error("password is incorrect");

@@ -1,12 +1,9 @@
-const express = require('express');
-const route = express.Router();
-const traineeController = require('../controller/traineeController');
-const adminController = require('../controller/adminController')
+// const express = require('express');
+// const route = express.Router();
+// const traineeController = require('../controller/traineeController');
 
-route.get('profile/me', adminController.getAccountStaff)
+// route.get('profile/me', adminController.getAccountStaff)
 
-route.patch('update/me', adminController.updateAccountTrainer)
+// route.get('/views', traineeController.getTopic)
 
-route.get('/views', traineeController.getTopic)
-
-module.exports = route
+// module.exports = route
