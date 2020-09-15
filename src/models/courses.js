@@ -20,7 +20,6 @@ const courseSchema = mongoose.Schema({
       topic: {
         type: mongoose.Schema.Types.ObjectId,
         require: true,
-        unique: true,
         ref: "Topic",
       },
     },

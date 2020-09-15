@@ -2,7 +2,7 @@ const express = require('express');
 const route = express.Router();
 const adminController = require('../controller/adminController');
 
-route.get('/trainer', adminController.getAccountTrainer)
+route.get('/trainers', adminController.getTrainer)
 
 route.get('/staff', adminController.getAccountStaff)
 

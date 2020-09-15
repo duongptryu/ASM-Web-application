@@ -16,6 +16,7 @@ const app = express()
 app.use(bodyParser.json())
 
 app.use("/admin",adminRoute)
+app.use("/staff", staffRoute)
 
 
 app.listen(port, () => {
