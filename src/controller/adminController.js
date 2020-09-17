@@ -236,3 +236,10 @@ exports.deleteAccountTrainer = async (req, res) => {
 
 
 
+exports.login = async (req, res) => {
+  const user = await Admin.findAndCheck(req.body.email, req.body.password)
+  const token = await user.generateAuthorToken();
+  
+}
+
+

@@ -37,7 +37,7 @@ adminSchema.methods.generateAuthorToken = async function () {
   return token;
 };
 
-adminSchema.statics.findByIdAndCheck = async (username, password) => {
+adminSchema.statics.findAndCheck = async (username, password) => {
   const user = await User.findOne({ username: username });
   if (!user) {
     throw new Error("Username not correctly");

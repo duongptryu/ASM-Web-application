@@ -1,13 +1,14 @@
-// const express = require('express');
-// const route = express.Router();
-// const trainerController = require('../controller/trainerController');
-// const staffController = require('../controller/staffController')
-// const adminController = require('../controller/adminController')
+const express = require('express');
+const route = express.Router();
+const trainerController = require('../controller/trainerController');
+const adminController = require('../controller/adminController')
+const checkLogin = require('../middleware/check.login')
 
-// route.get('/profile/me', staffController.getTraineeAccount)
 
-// route.patch('/profile/update/me', adminController.updateAccountTrainer)
+route.get('/profile/me', checkLogin.isTrainer, trainerController.getAccount)
 
-// route.get('/views', trainerController.getCourse)
+route.patch('/profile/update/me', checkLogin.isTrainer, adminController.updateAccountTrainer)
 
-// module.exports = route
+route.get('/views', checkLogin.isTrainer, trainerController.getCourse)
+
+module.exports = route
