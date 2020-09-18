@@ -1,5 +1,6 @@
 const mongoose = require("../db/db");
 const jwt = require("jsonwebtoken")
+const bcrypt = require('bcryptjs')
 
 const trainerSchema = mongoose.Schema({
   username: {
@@ -53,6 +54,17 @@ const trainerSchema = mongoose.Schema({
   ],
 });
 
+
+trainerSchema.methods.removeProperty = function () {
+  const userObject = this.toObject()
+  delete userObject.topics
+  delete userObject.tokens
+  delete userObject.password
+  delete userObject.role
+  return userObject
+}
+
+
 trainerSchema.methods.generateAuthorToken = async function () {
   const user = this;
   const token = jwt.sign(
@@ -64,8 +76,8 @@ trainerSchema.methods.generateAuthorToken = async function () {
   return token;
 };
 
-trainerSchema.statics.findByIdAndCheck = async (username, password) => {
-  const user = await User.findOne({ username: username });
+trainerSchema.statics.findAndCheck = async (username, password) => {
+  const user = await trainer.findOne({ username: username });
   if (!user) {
     throw new Error("Username not correctly");
   }

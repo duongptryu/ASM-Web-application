@@ -4,6 +4,8 @@ const Course = require("../models/courses");
 const Topic = require("../models/topics");
 const Category = require("../models/course.category");
 const mongoose = require("../db/db");
+const bcrypt = require('bcryptjs');
+const { populate } = require("../models/trainer");
 
 exports.getTrainees = async (req, res) => {
   let match = {};
@@ -43,7 +45,12 @@ exports.getTrainees = async (req, res) => {
   });
   console.log(match);
   try {
-    const trainees = await Trainee.find(match);
+    const trainees = await Trainee.find(match).populate({
+      path: 'courses.course',
+      populate: {
+        path: "topics.topic"
+      }
+    }).exec();
     if (trainees.length == 0) {
       return res.status(400).send("No staff account were found");
     }
@@ -59,13 +66,11 @@ exports.createAccountTrainee = async (req, res) => {
     "password",
     "name",
     "age",
-    "dateOfBirth",
     "education",
     "mainProgramLanguage",
     "toeicScore",
     "experiences",
     "address",
-    "courses",
   ];
   const listReq = Object.keys(req.body);
   const check = listAllow.every((element) => {
@@ -75,13 +80,12 @@ exports.createAccountTrainee = async (req, res) => {
   if (!check) {
     return res.status(400).send({ error: "Invalid input" });
   }
-
+  const password = await bcrypt.hash(req.body.password, 8)
+  req.body.password = password
   try {
-    const trainee = new Trainee({ ...req.body, role: "trainee" });
+    const trainee = new Trainee({ ...req.body, role: "trainee", courses:[] });
     await trainee.save();
-    const token = await trainee.generateAuthorToken();
-    console.log(token);
-    res.status(201).send({ user: trainee, token: token });
+    res.status(201).send({ user: trainee });
   } catch (error) {
     res.status(500).send(error.message);
   }
@@ -245,7 +249,7 @@ exports.getCourse = async (req, res) => {
 };
 
 exports.createCourse = async (req, res) => {
-  const listAllow = ["courseName", "description", "courseCategory", "topics"];
+  const listAllow = ["courseName", "description", "courseCategory"];
   const listReq = Object.keys(req.body);
 
   const check = listReq.every((element) => {
@@ -257,7 +261,7 @@ exports.createCourse = async (req, res) => {
   }
 
   try {
-    const course = new Course(req.body);
+    const course = new Course({...req.body, topics: []});
     await course.save();
     res.status(201).send({ message: "Create successful", course: course });
   } catch (error) {
@@ -446,7 +450,6 @@ exports.addCourseToTrainee = async (req, res) => {
       return res.status(404).send({message: "Trainee account not found"})
     }
     let check = false;
-    console.log(trainee)
     req.body.listCourseAdd.forEach(element => {
       trainee.courses.filter(course => {
          if(course.course.toString() === element.toString()){

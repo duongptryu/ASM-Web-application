@@ -1,11 +1,20 @@
 const mongoose = require("../db/db");
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcryptjs')
 
 const staffSchema = mongoose.Schema({
   username: {
     type: String,
     require: true,
     unique: true,
+  },
+  nameStaff: {
+    type: String,
+    require: true
+  },
+  age:{
+    type: Number,
+    require: true
   },
   password: {
     type: String,
@@ -14,6 +23,10 @@ const staffSchema = mongoose.Schema({
   role: {
     type: String,
     require: true,
+  },
+  staffStatus:{
+    type: Boolean,
+    require: true
   },
   tokens: [
     {
@@ -24,6 +37,15 @@ const staffSchema = mongoose.Schema({
     },
   ],
 });
+
+
+staffSchema.methods.toJSON = function () {
+  const user = this;
+  const userObject = user.toObject();
+  delete userObject.tokens
+  return userObject
+}
+
 
 staffSchema.methods.generateAuthorToken = async function () {
   const user = this;
@@ -36,8 +58,8 @@ staffSchema.methods.generateAuthorToken = async function () {
   return token;
 };
 
-staffSchema.statics.findByIdAndCheck = async (username, password) => {
-  const user = await User.findOne({ username: username });
+staffSchema.statics.findAndCheck = async (username, password) => {
+  const user = await staff.findOne({ username: username });
   if (!user) {
     throw new Error("Username not correctly");
   }

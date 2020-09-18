@@ -1,5 +1,7 @@
 const Staff = require("../models/staff");
 const Trainer = require("../models/trainer");
+const Admin = require('../models/admin')
+const bcrypt = require('bcryptjs')
 
 exports.getAccountStaff = async (req, res) => {
   let matchID = {}
@@ -19,7 +21,7 @@ exports.getAccountStaff = async (req, res) => {
 };
 
 exports.createAccountStaff = async (req, res) => {
-  const listAllow = ["username", "password"];
+  const listAllow = ["username", "password", "nameStaff", 'age', 'staffStatus'];
   const listReq = Object.keys(req.body);
   const check = listReq.every((obj) => {
     return listAllow.includes(obj);
@@ -28,14 +30,13 @@ exports.createAccountStaff = async (req, res) => {
   if (!check) {
     return res.status(400).send("Error, invalid input");
   }
-
+  const password = await bcrypt.hash(req.body.password, 8)
+  req.body.password = password
   try {
     const staff = new Staff({ ...req.body, role: "staff" });
     await staff.save();
-    const token = await staff.generateAuthorToken();
     res.status(201).send({
-      user: staff,
-      token: token,
+      user: staff
     });
   } catch (error) {
     res.status(400).send(error.message);
@@ -60,7 +61,8 @@ exports.createAccountTrainer = async (req, res) => {
   if (!check) {
     return res.status(400).send("Error, invalid input");
   }
-
+  const password = await bcrypt.hash(req.body.password, 8)
+  req.body.password = password
   try {
     const trainer = new Trainer({ ...req.body, role: "trainer" });
     await trainer.save();
@@ -75,7 +77,7 @@ exports.createAccountTrainer = async (req, res) => {
 };
 
 exports.updateAccountStaff = async (req, res) => {
-  const listAllow = ["username", "password"];
+  const listAllow = ["username", "password", 'nameStaff', 'age', 'staffStatus'];
   const listReq = Object.keys(req.body);
   const check = listReq.every((obj) => {
     return listAllow.includes(obj);
@@ -149,7 +151,7 @@ exports.getTrainer = async (req, res) => {
     match[element] = req.query[element];
   });
   try {
-    const trainers = await Trainer.find(match);
+    const trainers = await Trainer.find(match).populate('topics.topic').exec();
     if (trainers.length == 0) {
       return res.status(400).send("No trainer account were found");
     }
@@ -176,12 +178,12 @@ exports.createAccountTrainer = async (req, res) => {
   if (!check) {
     return res.status(400).send({ error: "Invalid input" });
   }
-
+  const password = await bcrypt.hash(req.body.password, 8)
+  req.body.password = password
   try {
     const trainer = new Trainer({ ...req.body, role: "trainee", topics:[]});
     await trainer.save();
-    const token = await trainer.generateAuthorToken();
-    res.status(201).send({ user: trainer, token: token });
+    res.status(201).send({ user: trainer });
   } catch (error) {
     res.status(500).send(error.message);
   }
@@ -236,10 +238,26 @@ exports.deleteAccountTrainer = async (req, res) => {
 
 
 
-exports.login = async (req, res) => {
-  const user = await Admin.findAndCheck(req.body.email, req.body.password)
-  const token = await user.generateAuthorToken();
-  
+exports.createAdmin = async(req, res) => {
+  const listAllow = ["username", "password"];
+  const listReq = Object.keys(req.body);
+  const check = listReq.every((obj) => {
+    return listAllow.includes(obj);
+  });
+
+  if (!check) {
+    return res.status(400).send("Error, invalid input");
+  }
+  const password = await bcrypt.hash(req.body.password, 8)
+  try {
+    const admin = new Admin({ username: req.body.username, password: password, role: "admin" });
+    await admin.save();
+    res.status(201).send({
+      user: admin
+    });
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
 }
 
 

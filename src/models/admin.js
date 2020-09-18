@@ -1,6 +1,7 @@
 const mongoose = require("../db/db");
 const jwt = require('jsonwebtoken')
-const bcrypt = require('bcryptjs')
+const bcrypt = require('bcryptjs');
+const { use } = require("../routes/admin");
 
 const adminSchema = mongoose.Schema({
   username: {
@@ -26,6 +27,15 @@ const adminSchema = mongoose.Schema({
   ],
 });
 
+adminSchema.methods.toJSON = function () {
+  const user = this;
+  const userObject = user.toObject();
+  delete userObject.tokens
+  delete userObject.password
+  delete userObject.role
+  return userObject
+}
+
 adminSchema.methods.generateAuthorToken = async function () {
   const user = this;
   const token = jwt.sign(
@@ -38,7 +48,7 @@ adminSchema.methods.generateAuthorToken = async function () {
 };
 
 adminSchema.statics.findAndCheck = async (username, password) => {
-  const user = await User.findOne({ username: username });
+  const user = await admin.findOne({ username: username });
   if (!user) {
     throw new Error("Username not correctly");
   }

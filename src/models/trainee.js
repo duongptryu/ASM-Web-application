@@ -1,5 +1,6 @@
 const mongoose = require("../db/db");
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcryptjs')
 
 
 const traineeSchema = mongoose.Schema({
@@ -22,10 +23,6 @@ const traineeSchema = mongoose.Schema({
   },
   age: {
     type: Number,
-    require: true,
-  },
-  dateOfBirth: {
-    type: Date,
     require: true,
   },
   education: {
@@ -85,7 +82,14 @@ const traineeSchema = mongoose.Schema({
   ],
 });
 
-
+traineeSchema.methods.removeProperty = function () {
+  const userObject = this.toObject()
+  delete userObject.courses
+  delete userObject.tokens
+  delete userObject.password
+  delete userObject.role
+  return userObject
+}
 
 
 traineeSchema.methods.generateAuthorToken = async function () {
@@ -99,8 +103,8 @@ traineeSchema.methods.generateAuthorToken = async function () {
   return token;
 };
 
-traineeSchema.statics.findByIdAndCheck = async (username, password) => {
-  const user = await User.findOne({ username: username });
+traineeSchema.statics.findAndCheck = async (username, password) => {
+  const user = await trainee.findOne({ username: username });
   if (!user) {
     throw new Error("Username not correctly");
   }
@@ -110,6 +114,7 @@ traineeSchema.statics.findByIdAndCheck = async (username, password) => {
   }
   return user;
 };
+
 
 const trainee = mongoose.model("Trainee", traineeSchema);
 

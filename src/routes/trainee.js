@@ -4,8 +4,8 @@ const traineeController = require('../controller/traineeController');
 const checkLogin = require('../middleware/check.login')
 
 
-route.get('profile/me', checkLogin.isTrainee, traineeController.getAccount)
+route.get('/profile/me', checkLogin.isTrainee, traineeController.getAccount)
 
-route.get('/views', checkLogin.isTrainee, traineeController.getTopic)
+route.get('/view-course', checkLogin.isTrainee, traineeController.getCourse)
 
 module.exports = route

@@ -1,6 +1,6 @@
 const express = require('express')
-const path = require('path')
 const bodyParser = require('body-parser')
+const cors = require('cors')
 
 const adminRoute = require('./routes/admin')
 const staffRoute = require('./routes/staff')
@@ -14,9 +14,13 @@ const port = process.env.PORT || 3000
 
 const app = express()
 app.use(bodyParser.json())
+app.use(cors())
 
 app.use("/admin",adminRoute)
 app.use("/staff", staffRoute)
+app.use('/login', authRoute)
+app.use('/trainee',traineeRoute)
+app.use('/trainer', trainerRoute)
 
 
 app.listen(port, () => {

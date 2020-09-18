@@ -9,6 +9,6 @@ route.get('/profile/me', checkLogin.isTrainer, trainerController.getAccount)
 
 route.patch('/profile/update/me', checkLogin.isTrainer, adminController.updateAccountTrainer)
 
-route.get('/views', checkLogin.isTrainer, trainerController.getCourse)
+route.get('/view-topics', checkLogin.isTrainer, trainerController.getTopics)
 
 module.exports = route
