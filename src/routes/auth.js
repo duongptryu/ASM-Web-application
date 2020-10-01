@@ -10,7 +10,6 @@ route.post('/trainee-login', authController.traineeLogin)
 
 route.post('/trainer-login', authController.trainerLogin)
 
-route.post('/logout', authController.logout)
-
+// route.post('/logout', authController.logout)
 
 module.exports = route
