@@ -28,11 +28,10 @@ exports.adminLogin = async (req, res) => {
 
 
 exports.staffLogin = async (req, res) => {
-  console.log(req.headers.authorize)
+  console.log(req.headers)
   console.log(req.body)
     const listAllow = ["username", "password"];
     const listReq = Object.keys(req.body);
-    console.log(listReq)
     const check = listReq.every((obj) => {
       return listAllow.includes(obj);
     });
@@ -42,7 +41,7 @@ exports.staffLogin = async (req, res) => {
     try {
       const user = await Staff.findAndCheck(req.body.username, req.body.password)
       const token = await user.generateAuthorToken();
-      res.cookie("authToken", token, {maxAge: 900000, httpOnly: true})
+      res.cookie("authToken", token, {maxAge: 900000});
       res.status(200).send({user: user, token: token})
     } catch (error) {
       res.status(500).send(error.message)
