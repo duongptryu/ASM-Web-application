@@ -2,10 +2,13 @@ const express = require('express');
 const route = express.Router();
 const adminController = require('../controller/adminController');
 const checkLogin = require('../middleware/check.login')
+const staffController = require('../controller/staffController')
 
 route.get('/trainers',checkLogin.isAdmin, adminController.getTrainer)
 
 route.get('/staff',checkLogin.isAdmin, adminController.getAccountStaff)
+
+route.get('/trainees',checkLogin.isAdmin, staffController.getTrainees)
 
 route.post('/create-trainer' ,checkLogin.isAdmin, adminController.createAccountTrainer)
 

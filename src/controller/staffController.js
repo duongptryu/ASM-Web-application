@@ -6,8 +6,10 @@ const Category = require("../models/course.category");
 const mongoose = require("../db/db");
 const bcrypt = require('bcryptjs');
 const { populate } = require("../models/trainer");
+const trainer = require("../models/trainer");
 
 exports.getTrainees = async (req, res) => {
+  console.log(req.headers)
   let match = {};
   const listSearch = [
     "id",
@@ -56,7 +58,7 @@ exports.getTrainees = async (req, res) => {
     }
     return res.status(200).send(trainees);
   } catch (error) {
-    return res.status(500).send(error.message);
+    return res.status(500).send("Khong tim thay data");
   }
 };
 

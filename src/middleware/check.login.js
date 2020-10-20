@@ -6,6 +6,7 @@ const Staff = require('../models/staff')
 
 
 exports.isAdmin = async (req, res, next) => {
+    console.log(req.headers)
     try {
         const token = req.headers.cookie.split("=")[1]
         const decode = jwt.verify(token, "thisismytoken")
@@ -18,7 +19,7 @@ exports.isAdmin = async (req, res, next) => {
         req.token = token
         next()
     } catch (error) {
-        res.status(400).send("please login")
+        res.status(401).send("please login")
     }
 }
 
@@ -34,7 +35,7 @@ exports.isStaff = async (req, res, next) => {
         req.token = token
         next()
     } catch (error) {
-        res.status(400).send("please login")
+        res.status(401).send("please login")
     }
 }
 
@@ -50,7 +51,7 @@ exports.isTrainer = async (req, res, next) => {
         req.token = token
         next()
     } catch (error) {
-        res.status(400).send("please login")
+        res.status(401).send("please login")
     }
 }
 
@@ -67,14 +68,14 @@ exports.isTrainee = async (req, res, next) => {
         req.token = token
         next()
     } catch (error) {
-        res.status(400).send("please login")
+        res.status(401).send("please login")
     }
 }
 
 exports.isLogged = (req, res, next) => {
     const reqToken = req.headers.cookie.split("=")[1]
     if(reqToken === undefined){
-      return res.status(400).send({message: "Please Login"})
+      return res.status(401).send({message: "Please Login"})
     }
     const decode = jwt.verify(reqToken, 'thisismytoken')
 }
